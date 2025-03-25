@@ -1,0 +1,178 @@
+ .title-info-box .elm-price span
+ { font-size: 5.4rem;
+
+    font-weight: 400;
+    text-transform: none;
+  }
+   .title-info-box .elm-price span.-red {
+        color:red;
+   }
+ 
+
+a.videolink .button-ico {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+a.videolink {
+    position: relative;
+    display: block;
+}
+
+
+
+
+/* ползунок в формах */
+            /* Общие стили */
+
+    
+            /* Стили для ползунка */
+            #slider {
+                -webkit-appearance: none;  /* Убирает стандартный стиль на WebKit-браузерах (Chrome, Safari) */
+                -moz-appearance: none;     /* Убирает стандартный стиль в Firefox */
+                appearance: none;          /* Убирает стандартный стиль в остальных браузерах */
+                width: 98%;               /* Полная ширина */
+                height: 8px;               /* Высота полосы */
+                background: #ddd;          /* Цвет фона полосы */
+                border-radius: 5px;        /* Скругление краёв полосы */
+                outline: none;             /* Убираем контур при фокусе */
+                transition: background 0.3s ease; /* Плавное изменение фона */
+            }
+    
+            #slider:hover {
+                background: #bbb; /* Более тёмный фон при наведении */
+            }
+    
+            /* Стили для ползунка (бегунка) */
+            #slider::-webkit-slider-thumb {
+                -webkit-appearance: none; /* Убираем стандартный стиль */
+                appearance: none;         /* Убираем стандартный стиль */
+                width: 20px;              /* Ширина бегунка */
+                height: 20px;             /* Высота бегунка */
+                border-radius: 50%;       /* Круглый бегунок */
+                background: #fff;      /* Цвет бегунка */
+                cursor: pointer;         /* Курсор при наведении */
+                transition: background 0.3s ease; /* Плавное изменение фона */
+            }
+    
+            #slider::-webkit-slider-thumb:hover {
+                background: #45a049; /* Цвет бегунка при наведении */
+            }
+    
+            #slider::-moz-range-thumb {
+                width: 20px;           /* Ширина бегунка в Firefox */
+                height: 20px;          /* Высота бегунка в Firefox */
+                border-radius: 50%;    /* Круглый бегунок в Firefox */
+                background: #4CAF50;   /* Цвет бегунка в Firefox */
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+    
+            #slider::-moz-range-thumb:hover {
+                background: #45a049;   /* Цвет бегунка при наведении в Firefox */
+            }
+    
+            /* Стили для кнопки */
+            #sendButton {
+                cursor: not-allowed;
+                opacity: 0.6;
+                pointer-events: none !important;
+            }
+    
+            /* Стили для активной кнопки */
+            #sendButton.active {
+                cursor: pointer;
+                opacity: 1;
+                pointer-events: auto !important;
+            }
+            
+    
+/* ползунок в формах */
+            /* Общие стили */
+    
+    
+            /* Стили для ползунка */
+            #slider2 {
+                -webkit-appearance: none;  /* Убирает стандартный стиль на WebKit-браузерах (Chrome, Safari) */
+                -moz-appearance: none;     /* Убирает стандартный стиль в Firefox */
+                appearance: none;          /* Убирает стандартный стиль в остальных браузерах */
+                width: 200px;               /* Полная ширина */
+                height: 8px;               /* Высота полосы */
+                background: #ddd;          /* Цвет фона полосы */
+                border-radius: 5px;        /* Скругление краёв полосы */
+                outline: none;             /* Убираем контур при фокусе */
+                transition: background 0.3s ease; /* Плавное изменение фона */
+                margin: 0 auto;
+            }
+    
+            #slider2:hover {
+                background: #bbb; /* Более тёмный фон при наведении */
+            }
+    
+            /* Стили для ползунка (бегунка) */
+            #slider2::-webkit-slider-thumb {
+                -webkit-appearance: none; /* Убираем стандартный стиль */
+                appearance: none;         /* Убираем стандартный стиль */
+                width: 20px;              /* Ширина бегунка */
+                height: 20px;             /* Высота бегунка */
+                border-radius: 50%;       /* Круглый бегунок */
+                background: #fff;      /* Цвет бегунка */
+                cursor: pointer;         /* Курсор при наведении */
+                transition: background 0.3s ease; /* Плавное изменение фона */
+            }
+    
+            #slider2::-webkit-slider-thumb:hover {
+                background: #45a049; /* Цвет бегунка при наведении */
+            }
+    
+            #slider2::-moz-range-thumb {
+                width: 20px;           /* Ширина бегунка в Firefox */
+                height: 20px;          /* Высота бегунка в Firefox */
+                border-radius: 50%;    /* Круглый бегунок в Firefox */
+                background: #4CAF50;   /* Цвет бегунка в Firefox */
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+    
+            #slider2::-moz-range-thumb:hover {
+                background: #45a049;   /* Цвет бегунка при наведении в Firefox */
+            }
+    
+            /* Стили для кнопки */
+            #sendButton2 {
+                opacity: 0.6;
+                pointer-events: none !important;
+            }
+    
+            /* Стили для активной кнопки */
+            #sendButton2.active2 {
+                cursor: pointer;
+                opacity: 1;
+                pointer-events: auto !important;
+            }
+            
+
+    .page-full {
+        padding-top: 30px !important;
+    }
+
+.logo_main {
+    width: 120px !important;
+}
+@media screen and (max-width: 1023px) {
+    .logo_main {
+        width: 100% !important;
+    }
+}
+
+.main_link_contact {
+    font-size: 15px !important;
+}
+@media screen and (max-width: 768px) {
+    .main_link_contact {
+        font-size: 12px !important;
+    }
+}

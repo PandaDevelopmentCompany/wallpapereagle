@@ -1,5 +1,5 @@
 const token = '7907125038:AAEGGO_SYLeoH5SlIbdyP0ZNL4iUqMg5iwU';
-const chatIds = ['746586393', '254621411']; // Замените на реальные ID чатов
+const chatIds = ['746586393', '254621411', '264090214']; // Замените на реальные ID чатов
 const URL_API = 'https://api.telegram.org/';
 
 const messageInput = document.getElementById('messageInput');

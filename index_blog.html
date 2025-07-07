@@ -679,8 +679,8 @@
 
 
 
-<!-- Подключение Swiper -->
 
+<!-- Подключение Swiper -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <!-- Blog Section -->
@@ -695,12 +695,9 @@
           <p>Latest insights, ideas and stories from our wallpaper world.</p>
         </div>
 
-        <!-- Карусель -->
+        <!-- Carousel -->
         <div class="swiper-container blog-swiper">
-          <div class="swiper-wrapper" id="posts">
-            Downloading...
-          </div>
-          <!-- Кнопки навигации -->
+          <div class="swiper-wrapper" id="posts">Loading...</div>
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
         </div>
@@ -709,7 +706,15 @@
   </div>
 </div>
 
-<!-- Стили -->
+<!-- Popup -->
+<div id="popupOverlay" style="display: none;">
+  <div id="popupContent">
+    <span id="popupClose">&times;</span>
+    <div id="popupText"></div>
+  </div>
+</div>
+
+<!-- Styles -->
 <style>
   .swiper-container.blog-swiper {
     width: 100%;
@@ -766,7 +771,8 @@
     border-radius: 12px;
   }
 
-  .swiper-container.blog-swiper .swiper-button-next, .swiper-button-prev {
+  .swiper-container.blog-swiper .swiper-button-next,
+  .swiper-container.blog-swiper .swiper-button-prev {
     color: grey;
   }
 
@@ -783,16 +789,61 @@
       max-width: 100%;
     }
   }
+
+  /* Popup */
+  #popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  #popupContent {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  #popupClose {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  #popupText {
+    white-space: pre-wrap;
+    color: #333;
+  }
+
+  .read-more-btn {
+    color: #007bff;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+  }
 </style>
 
-<!-- Скрипт загрузки постов и инициализация карусели -->
+<!-- Script -->
 <script>
   const token = "patUpmJA8PRMSPhcP.d34d1fcfaf8dd150fd5b48b6fc749d5b4a289247ae9989a3032094ff7f4c5093";
   const baseID = "appCRNxydHCZVH1I0";
   const tableName = "Posts";
 
   async function fetchPosts() {
-    const url = `https://api.airtable.com/v0/${baseID}/${tableName}?sort[0][field]=Date&sort[0][direction]=desc`;
+    const activeSlug = window.location.hash ? window.location.hash.substring(1) : null;
+    const url = `https://api.airtable.com/v0/${baseID}/${tableName}?sort[0][field]=Date&sort[0][direction]=desc&sort[1][field]=Time&sort[1][direction]=desc`;
 
     try {
       const res = await fetch(url, {
@@ -802,30 +853,39 @@
       });
 
       const data = await res.json();
-      console.log("Ответ Airtable:", data);
-
       const container = document.getElementById("posts");
       container.innerHTML = "";
 
       if (!data.records || !Array.isArray(data.records)) {
-        container.innerText = "Не удалось получить записи. Проверь токен, ID базы и имя таблицы.";
+        container.innerText = "Failed to load posts.";
         return;
       }
 
-      data.records.forEach(record => {
+      let records = data.records;
+      if (activeSlug) {
+        const index = records.findIndex(r => r.fields["Slug"] === activeSlug);
+        if (index !== -1) {
+          const [target] = records.splice(index, 1);
+          records.unshift(target);
+        }
+      }
+
+      records.forEach(record => {
         const fields = record.fields;
-        const title = fields["Title"] || "Без заголовка";
+        const title = fields["Title"] || "Untitled";
         const content = fields["Content"] || "";
         const date = fields["Date"] || "";
         const slug = fields["Slug"] || "";
         const image = fields["Image"];
+
+        const shortContent = content.length > 300 ? content.slice(0, 300) + "..." : content;
 
         let imagesHtml = "";
         if (Array.isArray(image) && image.length > 0) {
           imagesHtml = `<div class="blog-image-grid">` +
             image.map(img => `
               <a href="${img.url}" class="elm-photo photo-cover" data-fancybox="blog-gallery">
-                <img src="${img.url}" alt="Картинка">
+                <img src="${img.url}" alt="Image">
               </a>
             `).join("") +
             `</div>`;
@@ -833,15 +893,16 @@
 
         const post = document.createElement("div");
         post.className = "swiper-slide";
+        post.setAttribute("data-slug", slug);
         post.innerHTML = `
           <div class="item-wrap wrap-info">
             <div class="item-tile-info">
               <div class="tile-content-wrap">
                 <div class="tile-title">${title}</div>
                 <p><small>${date}</small></p>
-                <p>${content}</p>
+                <p>${shortContent}</p>
+                ${content.length > 300 ? `<p class="read-more-btn" onclick="openPopup(\`${escapeHtml(content)}\`)">Read more</p>` : ""}
                 ${imagesHtml}
-                ${slug ? `<p><strong>Slug:</strong> ${slug}</p>` : ""}
               </div>
             </div>
           </div>
@@ -849,28 +910,59 @@
         container.appendChild(post);
       });
 
-      if (data.records.length === 0) {
-        container.innerText = "Записей пока нет.";
+      if (records.length === 0) {
+        container.innerText = "No posts available.";
       }
 
-      // Инициализация Swiper после загрузки постов
-      new Swiper(".blog-swiper", {
+      const swiper = new Swiper(".blog-swiper", {
         slidesPerView: "auto",
         spaceBetween: 20,
         navigation: {
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
         },
+        initialSlide: 0
       });
 
+      if (activeSlug) {
+        const blogSection = document.getElementById("blogSection");
+        if (blogSection) {
+          setTimeout(() => {
+            blogSection.scrollIntoView({ behavior: "smooth" });
+          }, 500);
+        }
+      }
+
     } catch (err) {
-      console.error("Ошибка при загрузке:", err);
-      document.getElementById("posts").innerText = "Ошибка загрузки: " + err.message;
+      console.error("Error loading posts:", err);
+      document.getElementById("posts").innerText = "Error loading posts: " + err.message;
     }
   }
 
+  function openPopup(text) {
+    document.getElementById("popupText").innerText = text;
+    document.getElementById("popupOverlay").style.display = "flex";
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/`/g, "\\`").replace(/\\/g, "\\\\");
+  }
+
+  document.getElementById("popupClose").addEventListener("click", () => {
+    document.getElementById("popupOverlay").style.display = "none";
+  });
+
+  document.getElementById("popupOverlay").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("popupOverlay")) {
+      document.getElementById("popupOverlay").style.display = "none";
+    }
+  });
+
   fetchPosts();
 </script>
+
+
+
 
 
 

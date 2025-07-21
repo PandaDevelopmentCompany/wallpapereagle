@@ -524,7 +524,7 @@
             <!--/lead-info-box-->
 
             <!--tiles-text-info-box-->
-            <div class="tiles-text-info-box item-animation item-atop">
+            <div class="tiles-text-info-box item-animation item-atop" id="section0_01">
                 <div class="title-inner-wrap">
                     <h2 class="page-title"><span class="title-att">Why Choose</span><br>WallPaper Eagle?</h2>
                 </div>
@@ -631,7 +631,7 @@
 			       
                       
                         <!--item wrap-->
-                        <div class="item-wrap wrap-action">
+                        <div class="item-wrap wrap-action button0_01">
                             <div class="elm-dots"><span></span></div>
                             <div class="action-wrap">
                                 <a href="" class="btn button-att button-text datatitle" data-title="Contact us now" onclick="document.getElementById('popup-callback').classList.add('active');document.body.classList.add('popup-open');return false;">
@@ -833,6 +833,18 @@
     font-weight: bold;
     text-decoration: underline;
   }
+
+  @media screen and (max-width: 1024px) {
+    #blogSection .lead-info-box .info-desc-wrap, .lead-info-box .info-title-wrap {
+        margin-bottom: 20px !important;
+    }
+    #section0_01 .button0_01 {
+    display: none !important;
+  }
+  }
+
+
+  
 </style>
 
 <!-- Script -->

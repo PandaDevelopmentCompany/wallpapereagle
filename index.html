@@ -963,9 +963,12 @@
     }
   }
 
-  function openPopup(text) {
+   function openPopup(text) {
     document.getElementById("popupText").innerHTML = text;
     document.getElementById("popupOverlay").style.display = "flex";
+
+    // Отключаем прокрутку страницы
+    document.body.style.overflow = "hidden";
   }
 
   function escapeHtml(text) {
@@ -974,11 +977,17 @@
 
   document.getElementById("popupClose").addEventListener("click", () => {
     document.getElementById("popupOverlay").style.display = "none";
+
+    //  Включаем прокрутку обратно
+    document.body.style.overflow = "";
   });
 
   document.getElementById("popupOverlay").addEventListener("click", (e) => {
     if (e.target === document.getElementById("popupOverlay")) {
       document.getElementById("popupOverlay").style.display = "none";
+
+      //  Включаем прокрутку обратно
+      document.body.style.overflow = "";
     }
   });
 

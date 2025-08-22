@@ -860,6 +860,7 @@
 
 <!-- Script -->
 <script>
+    (() => {
   const token = "patUpmJA8PRMSPhcP.d34d1fcfaf8dd150fd5b48b6fc749d5b4a289247ae9989a3032094ff7f4c5093";
   const baseID = "appCRNxydHCZVH1I0";
   const tableName = "Posts";
@@ -982,6 +983,8 @@
   });
 
   fetchPosts();
+    window.openPopup = openPopup;
+  })();
 </script>
 
 

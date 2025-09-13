@@ -1,38 +1,76 @@
-const token = '7738919764:AAECEuRqdJXpYrEaFIlbd72-xjhlYR_9Ec4';
-const chatId = '746586393';
+const token = '7907125038:AAERDi5lrQAc6swxqAoXcmerzmI6MOVQJGA';
+const chatIds = ['746586393', '254621411', '264090214']; // Замените на реальные ID чатов
 const URL_API = 'https://api.telegram.org/';
 
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
+const fileInput = document.getElementById('fileInput'); // Добавьте элемент для выбора файла
 
 sendButton.addEventListener('click', (event) => {
-event.preventDefault();
-const message = 'Name: ' + sendName.value + '\nPhone number: ' + sendTel.value + '\nApplication comment: ' + messageInput.value + '\nAttach fille: ';
-if (message) {
-axios.post(`${URL_API}bot${token}/sendMessage`, {
-chat_id: chatId,
-text: message,
-})
-.then(response => console.log(response), alert('Your message has been successfully sent!✅ \nWe will definitely contact you! \nThank you!💚'))
-.catch(error => console.error(error));
-}
+    event.preventDefault();
+
+    const message = 'Name: ' + sendName.value + 
+                    '\nPhone number: ' + sendTel.value + 
+                    '\nApplication comment: ' + messageInput.value;
+    
+    let promises = []; // Массив для хранения промисов
+
+    chatIds.forEach(chatId => {
+        const formData = new FormData();
+        formData.append('chat_id', chatId);
+        if (fileInput.files.length > 0) {
+            formData.append('caption', message); // Добавляем сообщение как подпись
+            formData.append('document', fileInput.files[0]);
+            promises.push(axios.post(`${URL_API}bot${token}/sendDocument`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }));
+        } else {
+            promises.push(axios.post(`${URL_API}bot${token}/sendMessage`, {
+                chat_id: chatId,
+                text: message,
+            }));
+        }
+    });
+
+    // Ждем, пока все промисы завершатся
+    Promise.all(promises)
+        .then(responses => {
+            console.log(responses);
+            alert('Your message has been successfully sent!✅ \nWe will definitely contact you! \nThank you!💚');
+        })
+        .catch(error => console.error(error));
 });
 
 
 
+const sendName2 = document.getElementById('sendName2');
+const sendTel2 = document.getElementById('sendTel2');
+const messageInput2 = document.getElementById('messageInput2');
+const sendButton2 = document.getElementById('sendButton2');
 
-const messageInput1 = document.getElementById('messageInput1');
-const sendButton1 = document.getElementById('sendButton1');
+sendButton2.addEventListener('click', (event) => {
+    event.preventDefault();
 
-sendButton1.addEventListener('click', (event) => {
-event.preventDefault();
-const message = 'Name: ' + sendName1.value + '\nPhone number: ' + " " + sendTel1.value + '\nApplication comment: ' + messageInput1.value;
-if (message) {
-axios.post(`${URL_API}bot${token}/sendMessage`, {
-chat_id: chatId,
-text: message,
-})
-.then(response => console.log(response), alert('Your message has been successfully sent!✅ \nWe will definitely contact you! \nThank you!💚'))
-.catch(error => console.error(error));
-}
+    const message = 'Name: ' + sendName2.value + 
+                    '\nPhone number: ' + sendTel2.value + 
+                    '\nApplication comment: ' + messageInput2.value;
+
+    let promises = chatIds.map(chatId => {
+        return axios.post(`${URL_API}bot${token}/sendMessage`, {
+            chat_id: chatId,
+            text: message,
+        });
+    });
+
+    // Ждем, пока все промисы завершатся
+    Promise.all(promises)
+        .then(responses => {
+            console.log(responses);
+            alert('Your message has been successfully sent!✅ \nWe will definitely contact you! \nThank you!💚');
+        })
+        .catch(error => console.error(error));
 });
+
+ы

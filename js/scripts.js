@@ -252,7 +252,7 @@ if(sendButton){
 
     const formData = new FormData(form);
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyf1fW7pcqqDgZAVKSXuocQtPKTLtzMTrG3n6mTxFm8fuu2eKdAb7XAReShFEvrkitxfQ/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw-xT_MLbxzo2StzUCPR0B5f1ohK_TOjOV5Hmf6TkVJtH9Krw7KlNX1sM_FttAagKMSZA/exec';
 
     fetch(scriptURL, {
       method: 'POST',

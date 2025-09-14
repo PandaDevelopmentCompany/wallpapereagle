@@ -287,6 +287,25 @@ function sendForm(form, hasFile = false) {
 
     showToast('⏳ Sending...', false, 7000); // Лоадер-сообщение
 
+     // сброс кнопок и слайдеров
+    function resetSliders() {
+        const slider = document.getElementById('slider');
+        const submitButton = document.getElementById('sendButton');
+        if (slider && submitButton) {
+            slider.value = 0;
+            submitButton.disabled = true;
+            submitButton.classList.remove('active');
+        }
+
+        const slider2 = document.getElementById('slider2');
+        const submitButton2 = document.getElementById('sendButton2');
+        if (slider2 && submitButton2) {
+            slider2.value = 0;
+            submitButton2.disabled = true;
+            submitButton2.classList.remove('active2');
+        }
+    }
+
     if(hasFile && fileInput && fileInput.files.length > 0){
         const file = fileInput.files[0];
         const reader = new FileReader();
@@ -304,6 +323,7 @@ function sendForm(form, hasFile = false) {
                 await fetch(scriptURL, { method: 'POST', body: new URLSearchParams(payload) });
                 showToast('✅ Your message has been successfully sent!.');
                 form.reset();
+                resetSliders();
             } catch(err) {
                 console.warn(err);
                 showToast('❌ There was an error sending your request. Please try again.', true);
@@ -320,6 +340,7 @@ function sendForm(form, hasFile = false) {
         .then(() => {
             showToast('✅ Your message has been successfully sent!.');
             form.reset();
+            resetSliders();
         })
         .catch(err => {
             console.warn(err);

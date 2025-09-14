@@ -123,22 +123,25 @@ function closePopup(form) {
 }
 
 
-  togglePopupButtons.forEach(button => {
-      button.addEventListener('click', function (e) {
-          popupElementsClear();
-          if (this.classList.contains('active')) {
-              this.classList.remove('active');
-          } else {
-              popupElementsClose();
-              this.classList.add('active');
-              if (this.closest('.popup-menu-wrap')) document.body.classList.add('menu-show');
-              if (this.closest('.popup-search-wrap')) document.body.classList.add('search-show');
-              if (this.closest('.popup-filter-wrap')) document.body.classList.add('filter-show');
-              popupElementsContentPositionClass();
-          }
-          e.preventDefault();
-      });
-  });
+  // Обработчик кнопок бургер-меню
+togglePopupButtons.forEach(button => {
+    button.addEventListener('click', function (e) {
+        popupElementsClear();
+        if (this.classList.contains('active')) {
+            this.classList.remove('active');
+        } else {
+            popupElementsClose();
+            this.classList.add('active');
+            if (this.closest('.popup-menu-wrap')) document.body.classList.add('menu-show');
+            if (this.closest('.popup-search-wrap')) document.body.classList.add('search-show');
+            if (this.closest('.popup-filter-wrap')) document.body.classList.add('filter-show');
+            popupElementsContentPositionClass();
+        }
+        e.preventDefault();    // оставляем
+        e.stopPropagation();   // <-- добавляем только здесь
+    });
+});
+
 
   closePopupButtons.forEach(button => {
       button.addEventListener('click', function (e) {
@@ -282,7 +285,7 @@ function showToast(message, isError = false, duration = 10000) {
 // ======================== SEND FORM WITH TOAST ========================
 function sendForm(form, hasFile = false) {
     const formData = new FormData(form);
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEpf2MEUDiHzeIkDCEQ9yeiPKtyqP7tzEYLysL6Fe5XvLnnZ5BnAE1B7R_iHQhmKxUug/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyE_IkBt6lUFQpenMw_W04bgXJyTdgpQhQPCERGrkhGRj3C-RhyuzjGDxrkXDZRhxfpow/exec';
     const fileInput = form.querySelector('input[type="file"]');
 
     showToast('⏳ Sending...', false, 7000); // Лоадер-сообщение

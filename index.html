@@ -1139,7 +1139,7 @@
                                 <div class="frm-field-input field-dark">
                                     <div class="field-title">Your comments</div>
                                     <div class="field-input">
-                                        <textarea id="messageInput2" cols="80" class="form-input"
+                                        <textarea id="messageInput2" name="message" cols="80" class="form-input"
                                         rows="10"></textarea>
                                     </div>
                                 </div>
@@ -1294,12 +1294,17 @@
                         </div>
                         <div class="frm-row-submit">
                             <div class="frm-field">
-                                <button id="sendButton" type="submit" class="btn button-light button-content" onclick="this.closest('.popup-outer-box').classList.remove('active');document.body.classList.remove('popup-open');return false;">
+                                <!-- <button id="sendButton" type="submit" class="btn button-light button-content" onclick="this.closest('.popup-outer-box').classList.remove('active');document.body.classList.remove('popup-open');return false;">
                                     <div class="button-title">Submit</div>
                                     <div class="button-ico">
                                         <img src="img/icons/play.svg" alt="">
                                     </div>
-                                </button>
+                                </button> -->
+                                <button id="sendButton" type="submit" class="btn button-light button-content"> <div class="button-title">Submit</div>
+                                    <div class="button-ico">
+                                        <img src="img/icons/play.svg" alt="">
+                                    </div></button>
+
                             </div>
                         </div>
                         <label for="slider">Swipe the slider to the right to confirm that you are not a robot:</label>
@@ -1668,40 +1673,40 @@ console.log(new Date().getHours());
 <script src="js/form_for_tg.js"></script>
 
 <!-- ползунок в формах -->
-<script>
+<!-- <script>
     const slider = document.getElementById('slider');
     const submitButton = document.getElementById('sendButton');
-    // Функция для активации кнопки после выполнения задания с ползунком
+    
     function checkSlider() {
-        // Если ползунок достиг максимального значения, активируем кнопку
+       
         if (slider.value == slider.max) {
             submitButton.disabled = false;
-            submitButton.classList.add('active'); // Делает кнопку активной
+            submitButton.classList.add('active'); 
         } else {
             submitButton.disabled = true;
-            submitButton.classList.remove('active'); // Отключаем кнопку
+            submitButton.classList.remove('active'); 
         }
     }
-    // Отслеживаем изменение значения ползунка
+    
     slider.addEventListener('input', checkSlider);
 
     const slider2 = document.getElementById('slider2');
     const submitButton2 = document.getElementById('sendButton2');
-    // Функция для активации кнопки после выполнения задания с ползунком
+   
     function checkSlider2() {
-        // Если ползунок достиг максимального значения, активируем кнопку
+      
         if (slider2.value == slider2.max) {
             submitButton2.disabled = false;
-            submitButton2.classList.add('active2'); // Делает кнопку активной
+            submitButton2.classList.add('active2'); 
         } else {
             submitButton2.disabled = true;
-            submitButton2.classList.remove('active2'); // Отключаем кнопку
+            submitButton2.classList.remove('active2'); 
         }
     }
-    // Отслеживаем изменение значения ползунка
+
     slider2.addEventListener('input', checkSlider2);
 </script>
-
+ -->
 
 </body>
 

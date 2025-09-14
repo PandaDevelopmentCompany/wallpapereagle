@@ -113,6 +113,16 @@
       });
   }
 
+  // Функция закрытия попапа для конкретной формы
+function closePopup(form) {
+    const popupOuter = form.closest('.popup-outer-box');
+    if (popupOuter) {
+        popupOuter.classList.remove('active');
+        document.body.classList.remove('popup-open', 'popup-open-scroll');
+    }
+}
+
+
   togglePopupButtons.forEach(button => {
       button.addEventListener('click', function (e) {
           popupElementsClear();
@@ -241,76 +251,151 @@
       widthForm.value = `${width}`;
   }
 
- // ======================== GOOGLE SHEETS + FILE ========================
-const sendButton = document.getElementById("sendButton");
-if(sendButton){
-  sendButton.addEventListener("click", function(event){
-    event.preventDefault();
 
-    const form = event.target.closest("form");
-    if(!form) return;
 
-    const formData = new FormData(form);
-    const fileInput = form.querySelector('input[type="file"]');
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEpf2MEUDiHzeIkDCEQ9yeiPKtyqP7tzEYLysL6Fe5XvLnnZ5BnAE1B7R_iHQhmKxUug/exec';
+// ======================== TOAST-FEEDBACK ========================
+function showToast(message, isError = false, duration = 10000) {
+    // создаём элемент
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    if(isError) toast.classList.add('error');
+    toast.innerHTML = message;
 
-    // Если файл выбран — конвертируем в base64
-    if (fileInput && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const reader = new FileReader();
+    document.body.appendChild(toast);
 
-      reader.onload = async function() {
-        const base64File = reader.result.split(',')[1]; // только base64
-        const payload = {
-          name: formData.get('name'),
-          phone: formData.get('phone'),
-          message: formData.get('message'),
-          file: base64File,
-          fileName: file.name,
-          mimeType: file.type
-        };
+    // авто-скрытие
+    const timer = setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 500);
+    }, duration);
 
-        const params = new URLSearchParams(payload);
-
-        try {
-          const response = await fetch(scriptURL, {
-            method: 'POST',
-            body: params
-          });
-          alert("✅ Your message with file has been sent!");
-          form.reset();
-        } catch (err) {
-          console.warn("Ошибка отправки в Telegram", err);
-          alert("❌ Ошибка при отправке. Попробуйте снова.");
-        }
-      };
-
-      reader.readAsDataURL(file);
-
-    } else {
-      // Если файла нет — просто отправляем данные
-      const payload = {
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        message: formData.get('message')
-      };
-      const params = new URLSearchParams(payload);
-
-      fetch(scriptURL, {
-        method: 'POST',
-        body: params
-      })
-      .then(() => {
-        alert("✅ Your message has been sent!");
-        form.reset();
-      })
-      .catch(err => {
-        console.warn("Ошибка отправки в Telegram", err);
-        alert("❌ Ошибка при отправке. Попробуйте снова.");
-      });
-    }
-  });
+    // закрытие при клике на toast
+    toast.addEventListener('click', () => {
+        clearTimeout(timer);
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 500);
+    });
 }
+
+
+
+// ======================== SEND FORM WITH TOAST ========================
+function sendForm(form, hasFile = false) {
+    const formData = new FormData(form);
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEpf2MEUDiHzeIkDCEQ9yeiPKtyqP7tzEYLysL6Fe5XvLnnZ5BnAE1B7R_iHQhmKxUug/exec';
+    const fileInput = form.querySelector('input[type="file"]');
+
+    showToast('⏳ Sending...', false, 7000); // Лоадер-сообщение
+
+    if(hasFile && fileInput && fileInput.files.length > 0){
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async function() {
+            const base64File = reader.result.split(',')[1];
+            const payload = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                message: formData.get('message'),
+                file: base64File,
+                fileName: file.name,
+                mimeType: file.type
+            };
+            try {
+                await fetch(scriptURL, { method: 'POST', body: new URLSearchParams(payload) });
+                showToast('✅ Your message has been successfully sent!.');
+                form.reset();
+            } catch(err) {
+                console.warn(err);
+                showToast('❌ There was an error sending your request. Please try again.', true);
+            }
+        };
+        reader.readAsDataURL(file);
+    } else {
+        const payload = {
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            message: formData.get('message')
+        };
+        fetch(scriptURL, { method: 'POST', body: new URLSearchParams(payload) })
+        .then(() => {
+            showToast('✅ Your message has been successfully sent!.');
+            form.reset();
+        })
+        .catch(err => {
+            console.warn(err);
+            showToast('❌ There was an error sending your request. Please try again.', true);
+        });
+    }
+}
+
+// ======================== ATTACH TO FORMS ========================
+const sendButton = document.getElementById("sendButton");
+if(sendButton) sendButton.addEventListener("click", e => { 
+    e.preventDefault(); 
+    const form = e.target.closest('form');
+
+    // Проверка обязательных полей
+    const name = form.querySelector('[name="name"]');
+    const phone = form.querySelector('[name="phone"]');
+
+    if(!name.value.trim() || !phone.value.trim()){
+        showToast('❌ Please fill in all required fields', true);
+        return; 
+    }
+
+    closePopup(form); 
+    sendForm(form, true); 
+});
+
+
+const sendButton2 = document.getElementById("sendButton2");
+if(sendButton2) sendButton2.addEventListener("click", e => { 
+    e.preventDefault(); 
+    const form = e.target.closest('form');
+
+    const name = form.querySelector('[name="name"]');
+    const phone = form.querySelector('[name="phone"]');
+
+    if(!name.value.trim() || !phone.value.trim()){
+        showToast('❌ Please fill in all required fields', true);
+        return;
+    }
+
+    sendForm(form, false); 
+});
+
+
+// ======================== SLIDER BUTTON ACTIVATION ========================
+const slider = document.getElementById('slider');
+const submitButton = document.getElementById('sendButton');
+if (slider && submitButton) {
+    submitButton.disabled = true; // кнопка изначально отключена
+    slider.addEventListener('input', function() {
+        if (slider.value == slider.max) {
+            submitButton.disabled = false;
+            submitButton.classList.add('active');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.remove('active');
+        }
+    });
+}
+
+const slider2 = document.getElementById('slider2');
+const submitButton2 = document.getElementById('sendButton2');
+if (slider2 && submitButton2) {
+    submitButton2.disabled = true;
+    slider2.addEventListener('input', function() {
+        if (slider2.value == slider2.max) {
+            submitButton2.disabled = false;
+            submitButton2.classList.add('active2');
+        } else {
+            submitButton2.disabled = true;
+            submitButton2.classList.remove('active2');
+        }
+    });
+}
+
 
 
 

@@ -242,32 +242,32 @@
   }
 
  // ======================== GOOGLE SHEETS ========================
-const sendButton = document.getElementById("sendButton");
-if(sendButton){
-  sendButton.addEventListener("click", function(event){
-    event.preventDefault();
+// const sendButton = document.getElementById("sendButton");
+// if(sendButton){
+//   sendButton.addEventListener("click", function(event){
+//     event.preventDefault();
 
-    const form = event.target.closest("form");
-    if(!form) return;
+//     const form = event.target.closest("form");
+//     if(!form) return;
 
-    const formData = new FormData(form);
+//     const formData = new FormData(form);
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwQJU_BkN-F1r4EBMqyT75660iXaNXAKVYvh1zinSC3-_6bL_VG9nCajXBrdcY7sh9TDg/exec';
+//     const scriptURL = 'https://script.google.com/macros/s/AKfycbwQJU_BkN-F1r4EBMqyT75660iXaNXAKVYvh1zinSC3-_6bL_VG9nCajXBrdcY7sh9TDg/exec';
 
-    fetch(scriptURL, {
-      method: 'POST',
-      body: formData,   // <── вот ключ
-    })
-    .then(() => {
-      alert("✅ Your message has been successfully sent!");
-      form.reset();
-    })
-    .catch(err => {
-      console.warn("Ошибка отправки в Telegram", err);
-      alert("❌ Ошибка при отправке. Попробуйте снова.");
-    });
-  });
-}
+//     fetch(scriptURL, {
+//       method: 'POST',
+//       body: formData,
+//     })
+//     .then(() => {
+//       alert("✅ Your message has been successfully sent!");
+//       form.reset();
+//     })
+//     .catch(err => {
+//       console.warn("Ошибка отправки в Telegram", err);
+//       alert("❌ Ошибка при отправке. Попробуйте снова.");
+//     });
+//   });
+// }
 
 
 })();

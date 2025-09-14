@@ -241,7 +241,7 @@
       widthForm.value = `${width}`;
   }
 
- // ======================== GOOGLE SHEETS ========================
+ // ======================== GOOGLE SHEETS + FILE ========================
 const sendButton = document.getElementById("sendButton");
 if(sendButton){
   sendButton.addEventListener("click", function(event){
@@ -251,23 +251,67 @@ if(sendButton){
     if(!form) return;
 
     const formData = new FormData(form);
+    const fileInput = form.querySelector('input[type="file"]');
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEpf2MEUDiHzeIkDCEQ9yeiPKtyqP7tzEYLysL6Fe5XvLnnZ5BnAE1B7R_iHQhmKxUug/exec';
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbw-xT_MLbxzo2StzUCPR0B5f1ohK_TOjOV5Hmf6TkVJtH9Krw7KlNX1sM_FttAagKMSZA/exec';
+    // Если файл выбран — конвертируем в base64
+    if (fileInput && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
 
-    fetch(scriptURL, {
-      method: 'POST',
-      body: formData,
-    })
-    .then(() => {
-      alert("✅ Your message has been successfully sent!");
-      form.reset();
-    })
-    .catch(err => {
-      console.warn("Ошибка отправки в Telegram", err);
-      alert("❌ Ошибка при отправке. Попробуйте снова.");
-    });
+      reader.onload = async function() {
+        const base64File = reader.result.split(',')[1]; // только base64
+        const payload = {
+          name: formData.get('name'),
+          phone: formData.get('phone'),
+          message: formData.get('message'),
+          file: base64File,
+          fileName: file.name,
+          mimeType: file.type
+        };
+
+        const params = new URLSearchParams(payload);
+
+        try {
+          const response = await fetch(scriptURL, {
+            method: 'POST',
+            body: params
+          });
+          alert("✅ Your message with file has been sent!");
+          form.reset();
+        } catch (err) {
+          console.warn("Ошибка отправки в Telegram", err);
+          alert("❌ Ошибка при отправке. Попробуйте снова.");
+        }
+      };
+
+      reader.readAsDataURL(file);
+
+    } else {
+      // Если файла нет — просто отправляем данные
+      const payload = {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        message: formData.get('message')
+      };
+      const params = new URLSearchParams(payload);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: params
+      })
+      .then(() => {
+        alert("✅ Your message has been sent!");
+        form.reset();
+      })
+      .catch(err => {
+        console.warn("Ошибка отправки в Telegram", err);
+        alert("❌ Ошибка при отправке. Попробуйте снова.");
+      });
+    }
   });
 }
+
 
 
 })();
